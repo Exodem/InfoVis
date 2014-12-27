@@ -1,41 +1,42 @@
 PubDBtoJSONConverter = function() { this.pubJson = [];
     this.authorJson = [];
 };
+
 PubDBtoJSONConverter.prototype.buildAuthorJSON = function(json, callback) {
     var authorNamesArray = [];
     var hash = function(obj){
         return obj.name;
     };
-// author hashmap
+    // author hashmap
     var authorDictionary = {};
-// go through all publications
+    // go through all publications
     for (var i = 0; i < json.length; i++) {
-// go through all authors of current publication
+    // go through all authors of current publication
         for (var j = 0; j < json[i].authors.length; j++) {
-// if name is not part of authorNamesArray yet, add it and create author object
+    // if name is not part of authorNamesArray yet, add it and create author object
             if (authorNamesArray.indexOf(json[i].authors[j].name) < 0) {
                 authorNamesArray.push(json[i].authors[j].name);
                 var authorObject = {};
-// add this author name to object
+                // add this author name to object
                 authorObject.name = json[i].authors[j].name.trim();
-// create new publications array and add current publication
+                // create new publications array and add current publication
                 authorObject.publications = [];
                 authorObject.publications.push(json[i].id);
-// unique id
-//authorObject.id = i+''+j; // author name is id
-// author url
+                // unique id
+                //authorObject.id = i+''+j; // author name is id
+                // author url
                 if (typeof(json[i].authors[j].url) !== 'undefined') {
                     authorObject.url = json[i].authors[j].url;
                 }
-// put author into "dictionary"
+                // put author into "dictionary"
                 authorDictionary[hash(authorObject)] = authorObject;
             } else {
-// get author from hashmap and add publication
+                // get author from hashmap and add publication
                 authorDictionary[json[i].authors[j].name.trim()].publications.push(json[i].id);
             }
         }
     }
-// convert to json-array
+    // convert to json-array
     var keys = [];
     for (var key in authorDictionary) {
         keys.push(key)
@@ -43,9 +44,10 @@ PubDBtoJSONConverter.prototype.buildAuthorJSON = function(json, callback) {
     for (var i = 0; i < keys.length; i++) {
         this.authorJson.push(authorDictionary[keys[i]]);
     }
-// callback, when finished
+    // callback, when finished
     callback(this.authorJson);
 };
+
 PubDBtoJSONConverter.prototype.buildPublicationJSON = function($pubObject, callback) {
     var $tableRow = $pubObject.find('tr'),
         _this = this;
@@ -78,7 +80,7 @@ PubDBtoJSONConverter.prototype.buildPublicationJSON = function($pubObject, callb
             var _authors = contentsArray[0]
                 , _title = contentsArray[1]
                 , _description = contentsArray[2];
-// authors:
+            // authors:
             var authorsArray = _authors.split(',');
             for (var i = 0; i < authorsArray.length; i++) {
                 var person = {};
@@ -87,26 +89,26 @@ PubDBtoJSONConverter.prototype.buildPublicationJSON = function($pubObject, callb
                 try {
                     person.url = $(authorsArray[i]).attr('href'); // if surrounded by <a>-tag, keep href
                 } catch(e) {
-//console.log("err", e);
+                //console.log("err", e);
                     person.url = null;
                 }
                 object.authors.push(person);
             }
-// title:
+            // title:
             try {
                 titleUrl = $(_title).find('a').attr('href');
                 titleName = $(_title).find('a').text();
                 object.title.url = titleUrl;
                 object.title.name = titleName;
             } catch(e) {
-//console.log("err", e);
+                //console.log("err", e);
             }
-// description:
+            // description:
             try {
                 descriptionText = $(_description).text();
                 object.description.text = descriptionText;
             } catch(e){
-//console.log("err", e);
+                //console.log("err", e);
             }
             /*
              CONTENT END
@@ -120,13 +122,14 @@ PubDBtoJSONConverter.prototype.buildPublicationJSON = function($pubObject, callb
             /*
              DOWNLOADS END
              */
-// add current object to json-array
+            // add current object to json-array
             _this.pubJson.push(object);
         }
     });
-// callback, when finished
+    // callback, when finished
     callback(_this.pubJson);
 };
+
 // extracts authors from json and creates new, author-centered json
 PubDBtoJSONConverter.prototype.buildAuthorJSON = function(json, callback) {
     var authorNamesArray = [];
@@ -154,7 +157,8 @@ PubDBtoJSONConverter.prototype.buildAuthorJSON = function(json, callback) {
             }
         }
     }
-//console.log(this.authorJson);
+    //console.log(this.authorJson);
     return this.authorJson;
 };
+
 module.exports = PubDBtoJSONConverter;

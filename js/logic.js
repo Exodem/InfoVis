@@ -6,7 +6,7 @@ var logic = {
         // create a new pubDB json object
         var converter = new pubDB.json();
         converter.init(function (dbObject) {
-            /*Build the JSON*/
+            /*Build the JSONs*/
             converter.buildPublicationJSON(dbObject, function (pubData) {
                 logic.publications = pubData;
                 converter.buildAuthorJSON(pubData, function (authorData) {
@@ -14,6 +14,5 @@ var logic = {
                 });
             });
         });
-
     }
 };
