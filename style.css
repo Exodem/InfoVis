@@ -1,4 +1,15 @@
 body {
     font-family: 'Open Sans', sans-serif;
-    color : orangered;
+    color : #555555;
+}
+
+.panel {
+    width : 80%;
+    margin-left : 10%;
+    background-color: lightgray;
+    border-radius: 10px;
+}
+
+.content {
+    padding : 10px;
 }
