@@ -13,3 +13,26 @@ body {
 .content {
     padding : 10px;
 }
+
+input[type=text] {
+    margin : 10px;
+    border : solid darkgray 1px;
+}
+
+.hidden {
+    display : none;
+}
+
+.vis {
+    display : table-row;
+}
+
+.vis>div {
+    display : table-cell;
+    top : 0;
+}
+
+svg {
+    margin-left : 10px;
+    border : solid darkgray 1px;
+}
