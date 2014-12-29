@@ -43,7 +43,28 @@ svg {
 }
 
 .link {
-    stroke: #999;
+    stroke: #888;
     stroke-opacity: .6;
+}
+
+#tooltip {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 5px;
+    background-color: #222;
+    opacity : 0.8;
+    border : solid white 1px;
+
+}
+
+#tooltip.hidden {
+    display : none;
+}
+
+#tooltip p {
+    color : white;
+    margin: 0;
+    font-size: 10px;
 }
 

@@ -5,6 +5,7 @@ var network = {
     links : [],
     net : null,
     color : null,
+    opac : null,
     force : null,
     reverseIndex : {},
     ticks : 1,
@@ -48,12 +49,22 @@ var network = {
         /*Create nodes and links*/
         this.updateData();
 
-        this.color = d3.scale.category20();
+        this.color = d3.scale.log()
+            .domain([1, d3.max(network.nodes, function (d) {
+                return d.publications.length;})])
+            .range([0, 230]);
+
+        this.opac = d3.scale.linear()
+            .domain([1, d3.max(network.links, function (d) {
+                return d.value;})])
+            .range([0.3, 1]);
+
         this.force = d3.layout.force()
             .charge(-300)
             .linkDistance(30)
             .distance(10)
             .theta(0.8)
+            .gravity(0.3)
             .friction(0.5)
             .size([this.width, this.height]);
 
@@ -68,21 +79,37 @@ var network = {
             .attr("class", "link")
             .style("stroke-width", function (d) {
                 return Math.sqrt(d.value);
+            })
+            .style("stroke-opacity", function (d) {
+                //console.log(""+network.opac(d.value));
+                return ""+network.opac(d.value);
             });
 
         var node = this.net.selectAll(".node")
-            .data(this.nodes)
-            .enter().append("circle")
+            .data(this.nodes);
+        node.enter().append("circle")
             .attr("class", "node")
-            .attr("r", 3)
+            .attr("r", function (d){
+                return (network.color(d.publications.length)/255)*5 + 2;
+            })
             .style("fill", function (d) {
-                return network.color(d.publications.length);
+                var c = (Math.round(network.color(d.publications.length)));
+                return "rgb("+c+","+30+","+(140-Math.round(c/2))+")";
             })
             .call(this.force.drag);
 
-        node.append("title")
-            .text(function (d) {
-                return d.name;
+        /*Add Detail on Demand*/
+        node.on("mouseover", function (d) {
+            d3.select("#tooltip")
+                .style("left", d3.event.pageX + "px")
+                .style("top", d3.event.pageY-30 + "px")
+                .style("display", "block")
+                .select("p")
+                .text(d.name);
+            })
+            .on("mouseout", function () {
+                d3.select("#tooltip")
+                    .style("display","none");
             });
 
         this.force.on("tick", function () {
