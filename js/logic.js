@@ -2,6 +2,7 @@
 var logic = {
     publications: [],
     authors: [],
+    initialized : false,
     init: function () {
         $(".loading").show(1000);
         /*Initialize the data*/
@@ -12,6 +13,8 @@ var logic = {
             network.init();
             sunburst.init();
             controls.init();
+
+            logic.initialized = true;
 
             /*Show the result*/
             $(".loading").hide(500);
@@ -25,9 +28,9 @@ var logic = {
         converter.init(function (dbObject) {
             /*Build the JSONs*/
             converter.buildPublicationJSON(dbObject, function (pubData) {
-                this.publications = pubData;
+                logic.publications = pubData;
                 converter.buildAuthorJSON(pubData, function (authorData) {
-                    this.authors = authorData;
+                    logic.authors = authorData;
                     callback();
                 });
             });
@@ -42,5 +45,15 @@ var logic = {
                 "<div class = 'sunburst'></div>" +
                 "<div class = 'controls'></div>" +
             "</div>");
+    },
+    updateAll : function (){
+        //Prevent update before all components are initialized
+        if(this.initialized){
+            /*TODO Add more*/
+            console.log("Updating");
+            //network.updateNetwork();
+        }
+
+
     }
 };
