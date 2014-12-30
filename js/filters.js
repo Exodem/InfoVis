@@ -47,7 +47,7 @@ var filters = {
     filter: function () {
         /*Get new Values*/
         var mp = $("[name=minPub]").val();
-        this.minPublications = ($.isNumeric(mp))? mp : 3; //TODO change back to 0
+        this.minPublications = ($.isNumeric(mp))? mp : 5; //TODO change back to 0
 
         /*Return text fields to basic state*/
         $.each($("input[type=text]"), function (i, v) {

@@ -46,8 +46,12 @@ svg {
     stroke : #000;
 }
 
+.node.permanentFixed {
+
+}
+
 .link {
-    stroke: #999;
+    stroke: #777;
 }
 
 #tooltip {
