@@ -15,7 +15,7 @@ body {
 input[type=text] {
     margin : 10px;
     border : solid darkgray 1px;
-    color : lightgray;
+    color : black;
     width : 100px;
 }
 
@@ -73,5 +73,39 @@ svg {
 
 #tooltip img {
     width : 100px;
+}
+
+.ui-autocomplete {
+    max-height: 300px;
+    overflow: scroll;
+}
+
+span.ui-spinner.ui-widget.ui-widget-content.ui-corner-all {
+    height: 15px;
+    padding: 0 0 0 3px;
+    line-height: 13px;
+    margin-left: 10px;
+}
+
+input.ui-spinner-input {
+    margin: 0;
+    border: none;
+    font-size: 13px;
+}
+
+::-webkit-input-placeholder {
+    color: lightgrey;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+    color: lightgrey;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+    color: lightgrey;
+}
+
+:-ms-input-placeholder {
+    color: lightgrey;
 }
 

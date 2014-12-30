@@ -8,7 +8,7 @@ var filters = {
     init: function () {
         var labels = ["Author", "Publication", "Year", "minPub"];
         $.each(labels, function (i, v) {
-            $(".filters").append("<label>" + v + ":<input type='text'' name='" + v + "'value='" + v + "'></label>");
+            $(".filters").append("<label>" + v + ":<input type='text'' name='" + v + "'placeholder='" + v + "'></label>");
         });
         $("input[type=text]").keydown(this.filter)
             .click(function(e){
@@ -21,7 +21,28 @@ var filters = {
         filters.filter();
         /*filters.publications = logic.publications;
         filters.authors = logic.authors;*/
-        /*TODO Add Controls( autocomplete, dropdown etc.) and filter-functionality*/
+        /*TODO Add Controls( range slider for year) and filter-functionality*/
+        var names = [];
+        for (var i = 0; i < this.authors.length; i++){
+            names.push(this.authors[i].name);
+        }
+        $("input[name=Author]").autocomplete({
+            source: names
+        });
+
+        var pubs = [];
+        for (var i = 0; i < this.publications.length; i++){
+            pubs.push(this.publications[i].title.name);
+        }
+        $("input[name=Publication]").autocomplete({
+            source: pubs
+        });
+
+        $( "input[name=minPub]" ).spinner({
+            min: 0,
+            step: 1
+        });
+
     },
     filter: function () {
         /*Get new Values*/
