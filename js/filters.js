@@ -10,17 +10,17 @@ var filters = {
         $.each(labels, function (i, v) {
             $(".filters").append("<label>" + v + ":<input type='text'' name='" + v + "'placeholder='" + v + "'></label>");
         });
-        $("input[type=text]").keydown(this.filter)
-            .click(function(e){
+        $("input[type=text]").change(this.filter);
+            /*.click(function(e){
                 e = $(e.target);
                 if(e.attr("value") == e.attr("name")){
                     e.attr("value","");
                 }
             });
         /*Initialize Lists*/
-        filters.filter();
-        /*filters.publications = logic.publications;
-        filters.authors = logic.authors;*/
+
+        filters.publications = logic.publications;
+        filters.authors = logic.authors;
         /*TODO Add filter-functionality*/
         var names = [];
         for (var i = 0; i < this.authors.length; i++){
@@ -73,13 +73,14 @@ var filters = {
         $(".yearMin").append(Array.min(years));
         $(".yearMax").append(Array.max(years));
 
+        /*Wait for the ui to be initialized before accessing it*/
+        filters.filter();
 
     },
     filter: function () {
         /*Get new Values*/
-        var mp = $("[name=minPub]").val();
-        this.minPublications = ($.isNumeric(mp))? mp : 5; //TODO change back to 0
-
+        var mp = $("[name=minPub]").spinner("value");
+        filters.minPublications = ($.isNumeric(mp))? mp : 12; //TODO change back to 0
         /*Return text fields to basic state*/
         $.each($("input[type=text]"), function (i, v) {
             v = $(v);

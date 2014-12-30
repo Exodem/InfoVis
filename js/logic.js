@@ -50,8 +50,7 @@ var logic = {
         //Prevent update before all components are initialized
         if(this.initialized){
             /*TODO Add more*/
-            console.log("Updating");
-            //network.updateNetwork();
+            network.updateNetwork();
         }
 
 
