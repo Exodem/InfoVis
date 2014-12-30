@@ -21,7 +21,7 @@ var filters = {
         filters.filter();
         /*filters.publications = logic.publications;
         filters.authors = logic.authors;*/
-        /*TODO Add Controls( range slider for year) and filter-functionality*/
+        /*TODO Add filter-functionality*/
         var names = [];
         for (var i = 0; i < this.authors.length; i++){
             names.push(this.authors[i].name);
@@ -31,8 +31,10 @@ var filters = {
         });
 
         var pubs = [];
+        var years = [];
         for (var i = 0; i < this.publications.length; i++){
             pubs.push(this.publications[i].title.name);
+            years.push(this.publications[i].year);
         }
         $("input[name=Publication]").autocomplete({
             source: pubs
@@ -40,8 +42,37 @@ var filters = {
 
         $( "input[name=minPub]" ).spinner({
             min: 0,
-            step: 1
+            step: 1,
+            spin: function(event, ui) {
+                this.minPublications = ui.value;
+                filters.updateAuthors();
+            }
         });
+
+        Array.max = function( array ){
+            return Math.max.apply( Math, array );
+        };
+        Array.min = function( array ){
+            return Math.min.apply( Math, array );
+        };
+
+        $("input[name=Year]").replaceWith("<span id='years'></span>");
+
+        $("#years").slider({
+            min: Array.min(years),
+            max: Array.max(years),
+            values: [Array.min(years), Array.max(years)],
+            slide: function(event, ui){
+                $(".yearMin").text(ui.values[0]);
+                $(".yearMax").text(ui.values[1]);
+                filters.updatePublications();
+            }
+        });
+        $("<span class='yearMin'></span>").insertBefore("#years .ui-slider-handle:first-child");
+        $("<span class='yearMax'></span>").insertBefore("#years .ui-slider-handle:nth-child(2)");
+        $(".yearMin").append(Array.min(years));
+        $(".yearMax").append(Array.max(years));
+
 
     },
     filter: function () {
@@ -74,9 +105,11 @@ var filters = {
     },
     updatePublications: function () {
         var pub = [];
+        var yearMin = $(".yearMin").text();
+        var yearMax = $(".yearMax").text();
         $.each(logic.publications, function (i, p) {
             /*Apply all filter Criteria*/
-            if (filters.year == "" || filters.year== p.year) {
+            if (filters.year == "" || filters.year== p.year || (yearMin <= p.year && p.year <= yearMax)) {
                 pub.push(p);
             }
         });

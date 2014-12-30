@@ -97,6 +97,31 @@ input.ui-spinner-input {
     font-size: 13px;
 }
 
+#years {
+    width: 120px;
+    display: inline-block;
+    margin: -2px 20px;
+    height: 12px;
+}
+
+.ui-slider-handle {
+    width: 15px !important;
+    height: 15px !important;
+    border-radius: 10px;
+    margin-top: 2px;
+}
+
+.yearMin, .yearMax {
+    display: inline-block;
+    font-size: 12px;
+    width: 50%;
+    padding-top: 15px;
+}
+
+.yearMax {
+    text-align: right;
+}
+
 ::-webkit-input-placeholder {
     color: lightgrey;
 }
