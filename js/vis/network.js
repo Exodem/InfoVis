@@ -8,6 +8,7 @@ var network = {
     opac : null,
     force : null,
     reverseIndex : {},
+    imageIndex : {},
     ticks : 1,
     init: function () {
         this.net = d3.select(".network").append("svg")
@@ -20,7 +21,7 @@ var network = {
     updateData : function (){
         //Get filtered nodes
         this.nodes = filters.authors;
-        this.buildReverseIndex();
+        this.buildIndices();
         //Build links between authors who published together
         $.each(filters.publications, function (ip,pub){
             $.each(pub.authors,function (i,aut){
@@ -45,6 +46,11 @@ var network = {
             });
         });
     },
+
+    /*
+    TODO : Add Zoom and pan functionality and an alternative detail view on click
+     */
+
     createBaseNetwork : function () {
         /*Create nodes and links*/
         this.updateData();
@@ -57,7 +63,7 @@ var network = {
         this.opac = d3.scale.linear()
             .domain([1, d3.max(network.links, function (d) {
                 return d.value;})])
-            .range([0.3, 1]);
+            .range([0.3, 0.8]);
 
         this.force = d3.layout.force()
             .charge(-300)
@@ -99,17 +105,30 @@ var network = {
             .call(this.force.drag);
 
         /*Add Detail on Demand*/
-        node.on("mouseover", function (d) {
-            d3.select("#tooltip")
-                .style("left", d3.event.pageX + "px")
-                .style("top", d3.event.pageY-30 + "px")
-                .style("display", "block")
-                .select("p")
-                .text(d.name);
+        node
+            .on("mouseover", function (d) {
+                var tooltip = d3.select("#tooltip");
+                tooltip
+                    .style("left", d3.event.pageX + 10 + "px")
+                    .style("top", d3.event.pageY + "px")
+                    .style("display", "block")
+                    .select("p")
+                    .text(d.name);
+                if(network.imageIndex[d.name]!=""){
+                    tooltip.select("img")
+                        .attr("src", network.imageIndex[d.name]);
+                    $("#tooltip").find("img").show(150);
+                }
+                else{
+                    tooltip.select("img").style("display","none");
+                }
+                d3.select(this).classed("fixed", d.fixed = true);
             })
-            .on("mouseout", function () {
+            .on("mouseout", function (d) {
                 d3.select("#tooltip")
-                    .style("display","none");
+                    .style("display", "none");
+                d3.select(this).classed("fixed", d.fixed = false);
+
             });
 
         this.force.on("tick", function () {
@@ -169,10 +188,35 @@ var network = {
             .start();
 
     },
-    buildReverseIndex : function(){
+    buildIndices : function(){
         network.reverseIndex = {};
         $.each(this.nodes,function (i,v){
+            network.imageIndex[v.name] = "";
+            network.testAuthorImages(v);
             network.reverseIndex[v.name] = i;
         });
+    },
+    testAuthorImages : function (author){
+        if(author.url=='undefined'||author.url==""){
+            network.imageIndex[author.name] = "";
+            return;
+        }
+        /*Try different options of building the image name*/
+        var replacements = ["-","_"];
+        var endings = [".jpg",".jpeg"];
+        $.each(replacements,function(ir,rep){
+            $.each(endings,function(ie,ending){
+                var url = author.url+ author.name.toLowerCase().split(" ").join(rep)+ending;
+                network.setAuthorImage(author,url);
+            });
+        });
+
+    },
+    setAuthorImage : function (author,url) {
+        var img = new Image();
+        img.onload = function() {
+            network.imageIndex[author.name] = url;
+        };
+        img.src = url;
     }
 };
