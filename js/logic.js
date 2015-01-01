@@ -10,6 +10,7 @@ var logic = {
             /*Initialize all components*/
             logic.createStructure();
             filters.init();
+            detail.init();
             network.init();
             sunburst.init();
             controls.init();
