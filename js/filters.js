@@ -80,7 +80,7 @@ var filters = {
     filter: function () {
         /*Get new Values*/
         var mp = $("[name=minPub]").spinner("value");
-        filters.minPublications = ($.isNumeric(mp))? mp : 12; //TODO change back to 0
+        filters.minPublications = ($.isNumeric(mp))? mp : 8; //TODO change back to 0
         /*Return text fields to basic state*/
         $.each($("input[type=text]"), function (i, v) {
             v = $(v);
@@ -110,7 +110,8 @@ var filters = {
         var yearMax = $(".yearMax").text();
         $.each(logic.publications, function (i, p) {
             /*Apply all filter Criteria*/
-            if (filters.year == "" || filters.year== p.year || (yearMin <= p.year && p.year <= yearMax)) {
+            if (/*filters.year == "" ||*/ filters.year== p.year || (yearMin <= p.year && p.year <= yearMax
+                /*&& p.year == 2014*/)) { /*TODO For Test purposes only*/
                 pub.push(p);
             }
         });

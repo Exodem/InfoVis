@@ -54,6 +54,7 @@ svg {
     stroke: #777;
 }
 
+
 #tooltip {
     position: absolute;
     width: auto;
@@ -73,6 +74,13 @@ svg {
     color : white;
     margin: 0;
     font-size: 10px;
+}
+
+#tooltip p.description {
+    color : lightgray;
+    margin: 3px;
+    font-size: 9px;
+    font-style : italic;
 }
 
 #tooltip img {

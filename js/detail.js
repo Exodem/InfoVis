@@ -1,9 +1,11 @@
 /*Provides Detail on Demand functionality*/
 var detail = {
     imageIndex : {},
+    reverseIndex : {},
     init : function () {
         /*Build the image Index*/
         $.each(logic.authors,function (i,v){
+            detail.reverseIndex[v.name] = v;
             detail.testAuthorImages(v);
         });
     },
@@ -13,8 +15,19 @@ var detail = {
             .style("left", d3.event.pageX + 10 + "px")
             .style("top", d3.event.pageY + 10 + "px")
             .style("display", "block")
-            .select("p")
+            .select("p.name")
             .text(d.name);
+        var desc = "";
+        /*Publication*/
+        if(d.pub ){ desc = d.pub.description.html;}
+        /*Author*/
+        else if ( d.url){desc = "Total publications: "+detail.reverseIndex[d.name].publications.length;}
+        else if (d.aut){desc = "Total publications: "+detail.reverseIndex[d.aut.name].publications.length;}
+        /*Year*/
+        else if (d.parent){desc = "Publications this year: "+d.children.length;}
+        tooltip
+            .select("p.description")
+            .text(desc);
         if (detail.imageIndex[d.name] != "") {
             tooltip.select("img")
                 .attr("src", detail.imageIndex[d.name]);
@@ -23,14 +36,14 @@ var detail = {
         else {
             tooltip.select("img").style("display", "none");
         }
-        d3.select(this).classed("fixed", d.fixed = true);
+        //d3.select(this).classed("fixed", d.fixed = true);
     },
     hide : function (d) {
-        d3.select("#tooltip")
+        var tooltip = d3.select("#tooltip")
             .style("display", "none");
-        if(!d3.select(this).classed("permanent")){
+        /*if(!d3.select(this).classed("permanent")){
             d3.select(this).classed("fixed", d.fixed = false);
-        }
+        }*/
     },
     testAuthorImages : function (author){
         if(author.url=='undefined'||author.url==""){
