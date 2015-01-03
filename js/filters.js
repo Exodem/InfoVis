@@ -18,7 +18,7 @@ var filters = {
                 }
             });
         /*Initialize Lists*/
-
+        filters.filter();
         filters.publications = logic.publications;
         filters.authors = logic.authors;
         /*TODO Add filter-functionality*/
@@ -45,7 +45,7 @@ var filters = {
             step: 1,
             spin: function(event, ui) {
                 this.minPublications = ui.value;
-                filters.updateAuthors();
+                filters.filter();
             }
         });
 
@@ -65,7 +65,7 @@ var filters = {
             slide: function(event, ui){
                 $(".yearMin").text(ui.values[0]);
                 $(".yearMax").text(ui.values[1]);
-                filters.updatePublications();
+                filters.filter();
             }
         });
         $("<span class='yearMin'></span>").insertBefore("#years .ui-slider-handle:first-child");
@@ -73,21 +73,31 @@ var filters = {
         $(".yearMin").append(Array.min(years));
         $(".yearMax").append(Array.max(years));
 
+        $('input[type=text').keyup(function(){
+            filters.filter();
+        })
         /*Wait for the ui to be initialized before accessing it*/
         filters.filter();
 
     },
     filter: function () {
         /*Get new Values*/
-        var mp = $("[name=minPub]").spinner("value");
-        filters.minPublications = ($.isNumeric(mp))? mp :5; //TODO change back to 0
+        var mp = $("[name=minPub]").val();
+        //this.minPublications = ($.isNumeric(mp))? mp : 5; //TODO change back to 0
+
         /*Return text fields to basic state*/
+        /*
         $.each($("input[type=text]"), function (i, v) {
             v = $(v);
             if(v.attr("value") == ""){
                 v.attr("value", v.name);
             }
         });
+        */
+
+        this.authorName = $('input[name=Author]').val();
+
+        this.publicationName = $('input[name=Publications]').val();
 
         /*Update stuff*/
         filters.updatePublications();
@@ -98,7 +108,7 @@ var filters = {
         var authors = [];
         $.each(logic.authors, function (i, a) {
             /*Apply all filter Criteria*/
-            if (a.publications.length >= filters.minPublications) {
+            if (a.publications.length >= filters.minPublications && (this.authorName == "" || a.name.toLowerCase().indexOf(this.authorName) >= 0)) {
                 authors.push(a);
             }
         });
@@ -110,8 +120,7 @@ var filters = {
         var yearMax = $(".yearMax").text();
         $.each(logic.publications, function (i, p) {
             /*Apply all filter Criteria*/
-            if (/*filters.year == "" ||*/ filters.year== p.year || (yearMin <= p.year && p.year <= yearMax
-                /*&& p.year == 2014*/)) { /*TODO For Test purposes only*/
+            if ((filters.year == "" || filters.year== p.year || (yearMin <= p.year && p.year <= yearMax)) && (this.publicationName == "" || p.title.name.toLowerCase().indexOf(this.publicationName) >= 0)) {
                 pub.push(p);
             }
         });
