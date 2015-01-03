@@ -80,7 +80,7 @@ var filters = {
     filter: function () {
         /*Get new Values*/
         var mp = $("[name=minPub]").spinner("value");
-        filters.minPublications = ($.isNumeric(mp))? mp : 8; //TODO change back to 0
+        filters.minPublications = ($.isNumeric(mp))? mp :5; //TODO change back to 0
         /*Return text fields to basic state*/
         $.each($("input[type=text]"), function (i, v) {
             v = $(v);

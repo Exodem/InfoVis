@@ -1,6 +1,6 @@
 var controls = {
     width : 150,
-    height : 350,
+    height : 360,
     init: function () {
         var con = d3.select(".controls").append("svg")
             .attr("width", this.width)

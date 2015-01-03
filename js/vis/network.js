@@ -1,5 +1,5 @@
 var network = {
-    width : 350,height : 350,
+    width : 350,height : 360,
     nodes : [],links : [],
     reverseIndex : {},
     ticks : 1,mouseDown : false,

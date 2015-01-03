@@ -13,22 +13,27 @@ var detail = {
         var tooltip = d3.select("#tooltip");
         tooltip
             .style("left", d3.event.pageX + 10 + "px")
-            .style("top", d3.event.pageY + 10 + "px")
+            .style("top", d3.event.pageY -10 + "px")
             .style("display", "block")
             .select("p.name")
             .text(d.name);
+
         var desc = "";
         /*Publication*/
         if(d.pub ){ desc = d.pub.description.html;}
         /*Author*/
         else if ( d.url){desc = "Total publications: "+detail.reverseIndex[d.name].publications.length;}
         else if (d.aut){desc = "Total publications: "+detail.reverseIndex[d.aut.name].publications.length;}
+        /*Current Value in the bar chart*/
+        else if (d.freq){desc = bars.relation.y+": "+ d.freq;}
         /*Year*/
         else if (d.parent){desc = "Publications this year: "+d.children.length;}
+
         tooltip
             .select("p.description")
             .text(desc);
-        if (detail.imageIndex[d.name] != "") {
+
+        if (detail.imageIndex[d.name] != "" && !d.freq) {
             tooltip.select("img")
                 .attr("src", detail.imageIndex[d.name]);
             $("#tooltip").find("img").show(150);
@@ -36,7 +41,7 @@ var detail = {
         else {
             tooltip.select("img").style("display", "none");
         }
-        //d3.select(this).classed("fixed", d.fixed = true);
+
     },
     hide : function (d) {
         var tooltip = d3.select("#tooltip")

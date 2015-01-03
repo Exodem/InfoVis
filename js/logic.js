@@ -13,6 +13,7 @@ var logic = {
             detail.init();
             network.init();
             sunburst.init();
+            bars.init();
             controls.init();
 
             logic.initialized = true;
@@ -43,7 +44,9 @@ var logic = {
         con.append("<div class='filters hidden'></div>")
             .append("<div class='vis hidden'>" +
                 "<div class = 'network'></div>" +
-                "<div class = 'sunburst'></div>" +
+                "<div class = 'hor'>" +
+                    "<div class = 'sunburst'></div>" +
+                    "<div class = 'bars'></div></div>" +
                 "<div class = 'controls'></div>" +
             "</div>");
     },
