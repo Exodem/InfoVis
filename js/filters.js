@@ -1,5 +1,5 @@
 var filters = {
-    minPublications: 0,
+    minPublications: 1,
     publicationName : "",
     authorName : "",
     year : "",
@@ -41,7 +41,7 @@ var filters = {
         });
 
         $( "input[name=minPub]" ).spinner({
-            min: 0,
+            min: 1,
             step: 1,
             spin: function(event, ui) {
                 this.minPublications = ui.value;
@@ -73,11 +73,14 @@ var filters = {
         $(".yearMin").append(Array.min(years));
         $(".yearMax").append(Array.max(years));
 
-        $('input[type=text').keyup(function(){
+        $("input[type=text]").keyup(function(){
             filters.filter();
-        })
+        });
+        $(".ui-autocomplete").click(function(){
+           filters.filter();
+        });
         /*Wait for the ui to be initialized before accessing it*/
-        filters.filter();
+        //filters.filter();
 
     },
     filter: function () {
@@ -95,9 +98,9 @@ var filters = {
         });
         */
 
-        this.authorName = $('input[name=Author]').val();
+        filters.authorName = $('input[name=Author]').val();
 
-        this.publicationName = $('input[name=Publications]').val();
+        filters.publicationName = $('input[name=Publications]').val();
 
         /*Update stuff*/
         filters.updatePublications();
@@ -108,11 +111,11 @@ var filters = {
         var authors = [];
         $.each(logic.authors, function (i, a) {
             /*Apply all filter Criteria*/
-            if (a.publications.length >= filters.minPublications && (this.authorName == "" || a.name.toLowerCase().indexOf(this.authorName) >= 0)) {
+            if (a.publications.length >= filters.minPublications && (filters.authorName == "" || a.name.toLowerCase().indexOf(filters.authorName) >= 0)) {
                 authors.push(a);
             }
         });
-        this.authors = authors;
+        filters.authors = authors;
     },
     updatePublications: function () {
         var pub = [];
@@ -120,10 +123,10 @@ var filters = {
         var yearMax = $(".yearMax").text();
         $.each(logic.publications, function (i, p) {
             /*Apply all filter Criteria*/
-            if ((filters.year == "" || filters.year== p.year || (yearMin <= p.year && p.year <= yearMax)) && (this.publicationName == "" || p.title.name.toLowerCase().indexOf(this.publicationName) >= 0)) {
+            if ((filters.year == "" || filters.year== p.year || (yearMin <= p.year && p.year <= yearMax)) && (filters.publicationName == "" || p.title.name.toLowerCase().indexOf(filters.publicationName) >= 0)) {
                 pub.push(p);
             }
         });
-        this.publications = pub;
+        filters.publications = pub;
     }
 };
