@@ -3,6 +3,8 @@ var filters = {
     publicationName : "",
     authorName : "",
     year : "",
+    yearMin : "",
+    yearMax : "",
     authors : [],
     publications : [],
     init: function () {
@@ -42,11 +44,14 @@ var filters = {
 
         $( "input[name=minPub]" ).spinner({
             min: 1,
-            step: 1,
-            spin: function(event, ui) {
-                this.minPublications = ui.value;
-                filters.filter();
-            }
+            step: 1
+        });
+
+        $( "input[name=minPub]").click(function(){
+            filters.filter();
+        });
+        $( "input[name=minPub]").keyup(function(){
+            filters.filter();
         });
 
         Array.max = function( array ){
@@ -86,7 +91,7 @@ var filters = {
     filter: function () {
         /*Get new Values*/
         var mp = $("[name=minPub]").val();
-        //this.minPublications = ($.isNumeric(mp))? mp : 5; //TODO change back to 0
+        this.minPublications = ($.isNumeric(mp))? mp : 1; //TODO change back to 0
 
         /*Return text fields to basic state*/
         /*
@@ -100,7 +105,11 @@ var filters = {
 
         filters.authorName = $('input[name=Author]').val();
 
-        filters.publicationName = $('input[name=Publications]').val();
+        filters.publicationName = $('input[name=Publication]').val();
+
+
+        filters.yearMin = $(".yearMin").text();
+        filters.yearMax = $(".yearMax").text();
 
         /*Update stuff*/
         filters.updatePublications();
@@ -111,7 +120,30 @@ var filters = {
         var authors = [];
         $.each(logic.authors, function (i, a) {
             /*Apply all filter Criteria*/
-            if (a.publications.length >= filters.minPublications && (filters.authorName == "" || a.name.toLowerCase().indexOf(filters.authorName) >= 0)) {
+            if (a.publications.length >= filters.minPublications && (filters.authorName == "" || a.name.toLowerCase().indexOf(filters.authorName.toLowerCase()) >= 0)) {
+                /* let publication filters also filter authors */
+                /*
+                $.each(filters.publications, function(i, p) {
+                    $.each(p.authors, function(i, pa) {
+                       if(a.name.toLowerCase().indexOf(pa.name.toLowerCase()) >= 0) {
+                           authors.push(a);
+                       }
+                    });
+                });
+                */
+                /* add connected authors */
+                /*
+                $.each(a.publications, function(i, ap) {
+                    $.each(filters.publications, function(i, p) {
+                      if(ap == p.id){
+                          $.each(p.authors, function(i, pa) {
+                             authors.push(pa);
+                          });
+                      }
+                    });
+                });
+                */
+                /* filter authors without publication filters */
                 authors.push(a);
             }
         });
@@ -119,14 +151,24 @@ var filters = {
     },
     updatePublications: function () {
         var pub = [];
-        var yearMin = $(".yearMin").text();
-        var yearMax = $(".yearMax").text();
         $.each(logic.publications, function (i, p) {
             /*Apply all filter Criteria*/
-            if ((filters.year == "" || filters.year== p.year || (yearMin <= p.year && p.year <= yearMax)) && (filters.publicationName == "" || p.title.name.toLowerCase().indexOf(filters.publicationName) >= 0)) {
+            if ((filters.yearMin <= p.year && p.year <= filters.yearMax) && (filters.publicationName == "" || p.title.name.toLowerCase().indexOf(filters.publicationName.toLowerCase()) >= 0)) {
+                /* let author filters also filter publications */
+                /*
+                $.each(filters.authors, function(i, a) {
+                    $.each(a.publications, function(i, ap) {
+                      if(p.id == ap){
+                          pub.push(p);
+                      }
+                    });
+                });
+                */
+                /* filter publications without author filters */
                 pub.push(p);
             }
         });
         filters.publications = pub;
+        console.log(pub);
     }
 };
