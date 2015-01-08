@@ -45,7 +45,7 @@ var filters = {
         $( "input[name=minPub]" ).spinner({
             min: 1,
             step: 1
-        });
+        }).val(3); //Set initial value to save performance on loading the page
 
         $( "input[name=minPub]").click(function(){
             filters.filter();
@@ -85,13 +85,12 @@ var filters = {
            filters.filter();
         });
         /*Wait for the ui to be initialized before accessing it*/
-        //filters.filter();
-
+        filters.filter();
     },
     filter: function () {
         /*Get new Values*/
         var mp = $("[name=minPub]").val();
-        this.minPublications = ($.isNumeric(mp))? mp : 1; //TODO change back to 0
+        this.minPublications = ($.isNumeric(mp))? mp : 1;
 
         /*Return text fields to basic state*/
         /*
@@ -104,9 +103,7 @@ var filters = {
         */
 
         filters.authorName = $('input[name=Author]').val();
-
         filters.publicationName = $('input[name=Publication]').val();
-
 
         filters.yearMin = $(".yearMin").text();
         filters.yearMax = $(".yearMax").text();
@@ -169,6 +166,6 @@ var filters = {
             }
         });
         filters.publications = pub;
-        console.log(pub);
+        //console.log(pub);
     }
 };

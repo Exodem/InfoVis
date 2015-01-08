@@ -55,6 +55,8 @@ var logic = {
         if(this.initialized){
             /*TODO Add more*/
             network.updateNetwork();
+            sunburst.buildSunburst();
+            bars.buildBars();
         }
 
 

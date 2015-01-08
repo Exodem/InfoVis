@@ -34,36 +34,56 @@ var sunburst = {
             .innerRadius(function(d) { return Math.max(0, y(d.y)); })
             .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
 
+
         var path = sunburst.sun.selectAll("path")
-            .data(partition.nodes(root))
+            .data(partition.nodes(root));
+
+        //Enter
+        path
             .enter().append("path")
             .attr("d", arc)
             .style("fill", function (d) {return color((d.children ? d : d.parent).name);})
             .style("opacity",function (d) {return d.children ? 1 : shade (d.value);})
-            .on("click", click)
-            .on("mouseenter",function (d) {detail.show(d);})
-            .on("mouseout",function (d) {detail.hide(d);});
+            .on("click", function click(d) {
+                path.transition()
+                    .duration(750)
+                    .attrTween("d", arcTween(d))
+            })
+            .on("mouseenter", function (d) {
+                detail.show(d);
+            })
+            .on("mouseout", function (d) {
+                detail.hide(d);
+            });
 
-        function click(d) {
-            path.transition()
-                .duration(750)
-                .attrTween("d", arcTween(d));
-        }
+        //Update
+        path
+            .attr("d", arc)
+            .style("fill", function (d) {return color((d.children ? d : d.parent).name);})
+            .style("opacity",function (d) {return d.children ? 1 : shade (d.value);});
 
-        d3.select(self.frameElement).style("height", sunburst.height + "px");
+        //Exit
+        path.exit().remove();
 
         function arcTween(d) {
             var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
                 yd = d3.interpolate(y.domain(), [d.y, 1]),
                 yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
-            return function(d, i) {
+            return function (d, i) {
                 return i
-                    ? function(t) { return arc(d); }
-                    : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+                    ? function (t) {
+                    return arc(d);
+                }
+                    : function (t) {
+                    x.domain(xd(t));
+                    y.domain(yd(t)).range(yr(t));
+                    return arc(d);
+                };
             };
         }
 
-        d3.select(self.frameElement).style("height", this.height + "px");
+
+        d3.select(self.frameElement).style("height", sunburst.height + "px");
     },
     buildTree : function () {
         /*Get the latest filtered Data*/

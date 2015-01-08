@@ -40,7 +40,7 @@ var network = {
 
         /*Define helpers to determine node color and link opacity*/
         this.color = d3.scale.log()
-            .domain([1, d3.max(network.nodes, function (d) {return d.publications.length;})])
+            .domain([1, d3.max(logic.authors, function (d) {return d.publications.length;})])
             .range([0, 230]);
         this.opac = d3.scale.linear()
             .domain([1, d3.max(network.links, function (d) {return d.value;})])
@@ -61,7 +61,7 @@ var network = {
 
         /*Update the Node positions*/
         this.force.on("tick", function () {
-            if (network.ticks % 4 == 0) {
+            if (network.ticks % 1 == 0) {
                 //Skip ticks for performance sake
                 network.net.selectAll(".link")
                     .data(network.links)
@@ -78,22 +78,26 @@ var network = {
         });
     },
     enterNetwork : function (){
-        /*Add new Links*/
+        //Enter
         var link = this.net.select(".links").selectAll(".link")
-            .data(this.links)
+            .data(this.links);
+        /*Add new Links*/
+        link
             .enter().append("line")
             .attr("class", "link")
             .style("stroke-width", function (d) {return Math.sqrt(d.value);})
             .style("stroke-opacity", function (d) {return ""+network.opac(d.value);});
 
+        var node = this.net.select(".nodes").selectAll(".node")
+            .data(this.nodes);
         /*Add new Nodes*/
-        this.net.select(".nodes").selectAll(".node")
-            .data(this.nodes)
+        node
             .enter()
             .append("circle")
             .attr("class", "node")
-            .attr("r", function (d){return (network.color(d.publications.length)/255)*5 + 2;})
+            .attr("r", function (d){return d.publications?((network.color(d.publications.length)/255)*5 + 2):5;})
             .style("fill", function (d) {
+                if(!d.publications)return "lawngreen";
                 var c = (Math.round(network.color(d.publications.length)));
                 return "rgb("+c+","+30+","+(140-Math.round(c/2))+")";
             })
@@ -139,6 +143,19 @@ var network = {
                     network.force.resume();
                 })
         );
+
+        //Update existing Nodes
+        link
+            .style("stroke-width", function (d) {return Math.sqrt(d.value);})
+            .style("stroke-opacity", function (d) {return ""+network.opac(d.value);});
+
+        node
+            .attr("r", function (d){return d.publications?((network.color(d.publications.length)/255)*5 + 2):5;})
+            .style("fill", function (d) {
+                if(!d.publications)return "lawngreen";
+                var c = (Math.round(network.color(d.publications.length)));
+                return "rgb("+c+","+30+","+(140-Math.round(c/2))+")";
+            })
     },
     exitNetwork : function () {
         this.net.select(".links").selectAll(".link")
@@ -160,7 +177,7 @@ var network = {
             .start();
     },
     updateData : function (){
-        this.nodes = filters.authors;
+        this.nodes = $.extend(true, [], filters.authors);
         /*Build indices for faster access*/
         this.buildIndex();
         this.links = [];
@@ -186,9 +203,30 @@ var network = {
                     }
                 }
             });
+            //Provide quick feedback as the computation takes quite a while
+            //network.enterNetwork();
+            //network.force.tick();
+        });
+        if(this.nodes.length == 1) {
+            //Add detail nodes
+            this.createDetail();
+        }
+    },
+    createDetail : function () {
+        //Detail view -> There is only one Node!
+        var node = network.nodes[0];
+        //Add a publication Node to the network
+        $.each(node.publications,function (i,v){
+            //Do this more efficient later?
+            $.each(filters.publications,function(ip,pub){
+                if(pub.id == v){
+                    network.nodes.push({name : pub.title.name, pub:pub});
+                    return false; //Break loop
+                }
+            });
+            network.links.push({source : 0,target : i+1,value : 1})
         });
     },
-
     buildIndex : function(){
         network.reverseIndex = {};
         $.each(this.nodes,function (i,v){

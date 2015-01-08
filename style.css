@@ -54,12 +54,17 @@ svg {
     stroke-width: 1px;
 }
 
-.node.fixed {
+.node:hover {
     stroke : #000;
 }
 
 .node.permanent {
     stroke : #000;
+}
+
+.detailNode {
+    stroke: #fff;
+    stroke-width: 1px;
 }
 
 .link {
@@ -96,6 +101,10 @@ svg {
 
 #tooltip img {
     width : 100px;
+}
+
+#tooltip:hover{
+    display : none;
 }
 
 .bar {
