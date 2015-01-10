@@ -59,7 +59,7 @@ var network = {
         /*Insert new Nodes and links to the Network*/
         this.enterNetwork();
 
-        /*Update the Node positions*/
+        /*Initialze Ticker to update Node positions*/
         this.force.on("tick", function () {
             if (network.ticks % 1 == 0) {
                 //Skip ticks for performance sake
@@ -78,9 +78,20 @@ var network = {
         });
     },
     enterNetwork : function (){
+        //Show notice if no matching nodes exist
+        this.net.selectAll("text").remove();
+        if(this.nodes.length == 0){
+            this.net.append("text")
+                .attr("x",network.width/2)
+                .attr("y",network.height/2)
+                .attr("text-anchor","middle")
+                .text("No matching Nodes found.");
+            return;
+        }
         //Enter
         var link = this.net.select(".links").selectAll(".link")
             .data(this.links);
+
         /*Add new Links*/
         link
             .enter().append("line")
@@ -90,16 +101,23 @@ var network = {
 
         var node = this.net.select(".nodes").selectAll(".node")
             .data(this.nodes);
+        console.log(this.nodes);
         /*Add new Nodes*/
         node
             .enter()
             .append("circle")
             .attr("class", "node")
-            .attr("r", function (d){return d.publications?((network.color(d.publications.length)/255)*5 + 2):5;})
+            .attr("r", function (d){
+                return d.publications?((network.color(d.publications.length)/255)*5 + 2):
+                    d.pub.authors.length/3+3;})
             .style("fill", function (d) {
-                if(!d.publications)return "lawngreen";
+                if(!d.publications)return "#e6550d";
                 var c = (Math.round(network.color(d.publications.length)));
                 return "rgb("+c+","+30+","+(140-Math.round(c/2))+")";
+            })
+            .classed("award",function(d,i){
+                if(!d.pub)return false;//Author
+                return d.pub.award;
             })
             /*Add Detail on Demand*/
             .on("mouseenter",function (d) {detail.show(d)})
@@ -150,12 +168,18 @@ var network = {
             .style("stroke-opacity", function (d) {return ""+network.opac(d.value);});
 
         node
-            .attr("r", function (d){return d.publications?((network.color(d.publications.length)/255)*5 + 2):5;})
+            .attr("r", function (d){
+                return d.publications?((network.color(d.publications.length)/255)*5 + 2):
+                d.pub.authors.length/2+2;})
             .style("fill", function (d) {
-                if(!d.publications)return "lawngreen";
+                if(!d.publications)return "#e6550d";
                 var c = (Math.round(network.color(d.publications.length)));
                 return "rgb("+c+","+30+","+(140-Math.round(c/2))+")";
             })
+            .classed("award",function(d,i){
+                if(!d.pub)return false;//Author
+                return d.pub.award;
+            });
     },
     exitNetwork : function () {
         this.net.select(".links").selectAll(".link")
@@ -209,10 +233,13 @@ var network = {
         });
         if(this.nodes.length == 1) {
             //Add detail nodes
-            this.createDetail();
+            this.createAuthorDetail();
+        }
+        else if(filters.publications.length == 1){
+            this.createPubDetail();
         }
     },
-    createDetail : function () {
+    createAuthorDetail : function () {
         //Detail view -> There is only one Node!
         var node = network.nodes[0];
         //Add a publication Node to the network
@@ -221,10 +248,20 @@ var network = {
             $.each(filters.publications,function(ip,pub){
                 if(pub.id == v){
                     network.nodes.push({name : pub.title.name, pub:pub});
+                    network.links.push({source : 0,target : i+1,value : (1/pub.authors.length)*4});
                     return false; //Break loop
                 }
             });
-            network.links.push({source : 0,target : i+1,value : 1})
+
+        });
+    },
+    createPubDetail : function () {
+        var pub = filters.publications[0];
+        this.links = [];
+        this.nodes.push({name : pub.title.name, pub:pub});
+        $.each(pub.authors,function (i,v){
+            network.links.push({source : network.nodes.length-1,
+                target : network.reverseIndex[v.name], value : 1});
         });
     },
     buildIndex : function(){

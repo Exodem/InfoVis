@@ -1,7 +1,7 @@
 /*Provides Detail on Demand functionality*/
 var detail = {
-    imageIndex : {},
-    reverseIndex : {},
+    imageIndex : [],
+    reverseIndex : [],
     init : function () {
         /*Build the image Index*/
         $.each(logic.authors,function (i,v){
@@ -20,9 +20,12 @@ var detail = {
 
         var desc = "";
         /*Publication*/
-        if(d.pub ){ desc = d.pub.description.html;}
+        if(d.pub ){ desc = ((d.pub.award==true)?
+            "<span class='award'>AWARD WINNING PUBLICATION</span>":"")+
+            d.pub.description.html+"</br>"+"Involved Authors: "+ d.pub.authors.length;
+        }
         /*Author*/
-        else if ( d.url){desc = "Total publications: "+detail.reverseIndex[d.name].publications.length;}
+        else if ( d.publications){desc = "Total publications: "+detail.reverseIndex[d.name].publications.length;}
         else if (d.aut){desc = "Total publications: "+detail.reverseIndex[d.aut.name].publications.length;}
         /*Current Value in the bar chart*/
         else if (d.freq){desc = bars.relation.y+": "+ d.freq;}
@@ -31,7 +34,7 @@ var detail = {
 
         tooltip
             .select("p.description")
-            .text(desc);
+            .html(desc);
 
         if (detail.imageIndex[d.name] != "" && !d.freq) {
             tooltip.select("img")

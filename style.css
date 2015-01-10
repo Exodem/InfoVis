@@ -62,6 +62,17 @@ svg {
     stroke : #000;
 }
 
+.node.award {
+    stroke : darkred;
+    fill : orange !important;
+}
+
+span.award {
+    display:block;
+    color :#e6550d;
+    font-style:italic;
+}
+
 .detailNode {
     stroke: #fff;
     stroke-width: 1px;

@@ -26,12 +26,12 @@ var logic = {
     },
     getPubDB : function (callback){
         // create a new pubDB json object
-        var converter = new pubDB.json();
-        converter.init(function (dbObject) {
+        logic.converter = new pubDB.json();
+        logic.converter.init(function (dbObject) {
             /*Build the JSONs*/
-            converter.buildPublicationJSON(dbObject, function (pubData) {
+            logic.converter.buildPublicationJSON(dbObject, function (pubData) {
                 logic.publications = pubData;
-                converter.buildAuthorJSON(pubData, function (authorData) {
+                logic.converter.buildAuthorJSON(pubData, function (authorData) {
                     logic.authors = authorData;
                     callback();
                 });

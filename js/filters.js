@@ -94,13 +94,13 @@ var filters = {
 
         /*Return text fields to basic state*/
         /*
-        $.each($("input[type=text]"), function (i, v) {
-            v = $(v);
-            if(v.attr("value") == ""){
-                v.attr("value", v.name);
-            }
-        });
-        */
+         $.each($("input[type=text]"), function (i, v) {
+         v = $(v);
+         if(v.attr("value") == ""){
+         v.attr("value", v.name);
+         }
+         });
+         */
 
         filters.authorName = $('input[name=Author]').val();
         filters.publicationName = $('input[name=Publication]').val();
@@ -141,7 +141,21 @@ var filters = {
                 });
                 */
                 /* filter authors without publication filters */
-                authors.push(a);
+                //authors.push(a);
+
+
+                $.each(a.publications, function (i, ap) {
+                    $.each(filters.publications, function (i, p) {
+                        if (ap == p.id) {
+                            var ex = false;
+                            $.each(authors,function (i,aut){
+                                if(aut==a)ex = true;
+                            });
+                            if(!ex) authors.push(a);
+                        }
+                    });
+                });
+
             }
         });
         filters.authors = authors;
