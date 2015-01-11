@@ -1,11 +1,10 @@
 var bars = {
     width : 250, height : 150,
     tree : null,node : null,
-    relation : {x:"Authors",y:"Publications"},
+    relation : {x:"Author",y:"Publications"},
     bounds : {top : 15,bottom : 15,left : 30,right : 0},
     initialized:false,
     sort : true,
-    /*TODO y-Scale not dynamic!*/
     init: function () {
         /*Initialize the sunburst*/
         bars.bars = d3.select(".bars").append("svg")
@@ -49,19 +48,17 @@ var bars = {
         rects
             .enter().append("rect")
             .attr("class", "bar")
-            .attr("x", function(d) { return x(d.name); })
-            .attr("width", x.rangeBand())
-            .attr("y", function(d) { return y(d.freq); })
-            .attr("height", function(d) { return bars.height-bars.bounds.bottom - bars.bounds.top - y(d.freq); })
             .on("mouseover",function (d) {detail.show(d);})
             .on("mouseout",function (d) {detail.hide(d);});
 
         //Update
         rects
             .attr("x", function(d) { return x(d.name); })
-            .attr("width", x.rangeBand())
             .attr("y", function(d) { return y(d.freq); })
+            .attr("width", x.rangeBand())
             .attr("height", function(d) { return bars.height-bars.bounds.bottom - bars.bounds.top - y(d.freq); });
+
+            //.attr("fill",function(d){return d3.scale.category20c()(d.name)});
 
         //Exit
         rects
@@ -69,8 +66,10 @@ var bars = {
             .remove();
 
         //Adapt Axis
+        this.bars.selectAll("g.axis .legend").remove();
         this.bars.selectAll("g.y.axis")
             .call(d3.svg.axis()
+                .tickFormat(d3.format("d"))
                 .scale(y)
                 .orient("left"))
             .append("text")
@@ -93,23 +92,61 @@ var bars = {
     buildData : function () {
         /*Get the latest filtered Data*/
         var authors = filters.authors;
+        var publications = filters.publications;
         /*Reset Data*/
         var data = [];
-        $.each(authors,function (i,v){
-            data.push({name : v.name, freq : v.publications.length})
-        });
+        if(bars.relation.x == "Author"){
+            $.each(authors, function (i, v) {
+                if(bars.relation.y == "Publications"){
+                    data.push({name: v.name, freq: v.publications.length})
+                }
+                else{
+                    var awards = 0;
+                    $.each(v.publications,function(ip1,pub1){
+                        $.each(publications,function(ip2,pub2){
+                            if(pub1 == pub2.id){
+                                if(pub2.award){
+                                    awards++;
+                                }
+                            }
+                        })
+                    });
+                    if(awards >0){
+                        data.push({name: v.name, freq: awards})
+                    }
+                }
+            });
+        }
+        else{
+            $.each(publications, function (i, v) {
+                if(bars.relation.y == "Awards"){
+                    if(!v.award) return true; //Continue
+                }
+                var ex = false;
+                $.each(data, function (id, d) {
+                    if (d.name == v.year) {
+                        ex = true;
+                        d.freq++;
+                        return false; //Break
+                    }
+                });
+                if (!ex) {
+                    data.push({name: v.year, freq: 1})
+                }
+            });
+        }
         if(this.sort){
             data.sort(function (a,b){
                 return a.freq< b.freq;
             });
         }
-        else{
+        /*else{
             data.sort(function (a,b){
                 return a.name< b.name;
             });
-        }
+        }*/
         //Crop data that can not be shown
-        data.length = Math.min(data.length,bars.width/2);
+        //data.length = Math.min(data.length,bars.width/2);
         return data;
     }
 };

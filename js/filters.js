@@ -166,7 +166,7 @@ var filters = {
             /*Apply all filter Criteria*/
             if ((filters.yearMin <= p.year && p.year <= filters.yearMax) && (filters.publicationName == "" || p.title.name.toLowerCase().indexOf(filters.publicationName.toLowerCase()) >= 0)) {
                 /* let author filters also filter publications */
-                /*
+                /*TODO Decide if this is a good Idea ;) */
                 $.each(filters.authors, function(i, a) {
                     $.each(a.publications, function(i, ap) {
                       if(p.id == ap){
@@ -174,9 +174,9 @@ var filters = {
                       }
                     });
                 });
-                */
+
                 /* filter publications without author filters */
-                pub.push(p);
+                //pub.push(p);
             }
         });
         filters.publications = pub;
