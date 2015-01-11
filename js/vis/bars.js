@@ -4,6 +4,8 @@ var bars = {
     relation : {x:"Authors",y:"Publications"},
     bounds : {top : 15,bottom : 15,left : 30,right : 0},
     initialized:false,
+    sort : true,
+    /*TODO y-Scale not dynamic!*/
     init: function () {
         /*Initialize the sunburst*/
         bars.bars = d3.select(".bars").append("svg")
@@ -22,6 +24,9 @@ var bars = {
             .rangeBands([1, bars.width-bars.bounds.right-bars.bounds.left-1]);
 
         var y = d3.scale.linear()
+            .domain([0, d3.max(data, function (d) {
+                return d.freq;
+            })])
             .range([bars.height-bars.bounds.bottom-bars.bounds.top, 0]);
 
         x.domain(data.map(function(d) { return d.name; }));
@@ -31,27 +36,10 @@ var bars = {
         if(!this.initialized){
             this.initialized = true;
             this.bars.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + (this.height - bars.bounds.bottom - bars.bounds.top) + ")")
-                .call(d3.svg.axis()
-                    .scale(x)
-                    .orient("bottom"))
-                .append("text")
-                .attr("y", 11)
-                .attr("x", (bars.width - bars.bounds.right - bars.bounds.left) / 2)
-                .attr("class", "legend")
-                .text(bars.relation.x);
+                .attr("class", "x axis");
 
             this.bars.append("g")
-                .attr("class", "y axis")
-                .call(d3.svg.axis()
-                    .scale(y)
-                    .orient("left"))
-                .append("text")
-                .attr("x", -bars.bounds.left + 5)
-                .attr("y", -5)
-                .attr("class", "legend")
-                .text(bars.relation.y);
+                .attr("class", "y axis");
         }
 
         var rects = this.bars.selectAll(".bar")
@@ -79,6 +67,28 @@ var bars = {
         rects
             .exit()
             .remove();
+
+        //Adapt Axis
+        this.bars.selectAll("g.y.axis")
+            .call(d3.svg.axis()
+                .scale(y)
+                .orient("left"))
+            .append("text")
+            .attr("x", -bars.bounds.left + 5)
+            .attr("y", -5)
+            .attr("class", "legend")
+            .text(bars.relation.y);
+
+        this.bars.selectAll("g.x.axis")
+            .attr("transform", "translate(0," + (this.height - bars.bounds.bottom - bars.bounds.top) + ")")
+            .call(d3.svg.axis()
+                .scale(x)
+                .orient("bottom"))
+            .append("text")
+            .attr("y", 11)
+            .attr("x", (bars.width - bars.bounds.right - bars.bounds.left) / 2)
+            .attr("class", "legend")
+            .text(bars.relation.x);
     },
     buildData : function () {
         /*Get the latest filtered Data*/
@@ -88,9 +98,16 @@ var bars = {
         $.each(authors,function (i,v){
             data.push({name : v.name, freq : v.publications.length})
         });
-        data.sort(function (a,b){
-            return a.freq< b.freq;
-        });
+        if(this.sort){
+            data.sort(function (a,b){
+                return a.freq< b.freq;
+            });
+        }
+        else{
+            data.sort(function (a,b){
+                return a.name< b.name;
+            });
+        }
         //Crop data that can not be shown
         data.length = Math.min(data.length,bars.width/2);
         return data;

@@ -1,6 +1,7 @@
 body {
     font-family: 'Open Sans', sans-serif;
     color : #555555;
+    overflow-y: scroll;
 }
 
 .panel {
@@ -71,6 +72,10 @@ span.award {
     display:block;
     color :#e6550d;
     font-style:italic;
+}
+
+.notification {
+    fill :red;
 }
 
 .detailNode {

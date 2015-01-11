@@ -23,10 +23,18 @@ var network = {
             .size([this.width, this.height]);
         /*Add Zooming and Panning Behaviour*/
         this.net
-            .call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", function () {
-                network.net.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+            .call(d3.behavior.zoom()
+                .center([network.width / 2, network.height / 2])
+                .scaleExtent([0, 8])
+                .on("zoom", function () {
+                    network.net.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
             }))
-            .on("dblclick.zoom", null) /*Prevent Zoom on doublecklick*/
+            /*Prevent Zoom on doublecklick and panning behaviour*/
+            .on("dblclick.zoom", null)
+            .on("mousedown.zoom", null)
+            .on("touchstart.zoom", null)
+            .on("touchmove.zoom", null)
+            .on("touchend.zoom", null)
             .on("mousedown",function(){network.mouseDown = true;})
             .on("mouseup",function(){network.mouseDown = true;})
             .append("g");
@@ -78,16 +86,6 @@ var network = {
         });
     },
     enterNetwork : function (){
-        //Show notice if no matching nodes exist
-        this.net.selectAll("text").remove();
-        if(this.nodes.length == 0){
-            this.net.append("text")
-                .attr("x",network.width/2)
-                .attr("y",network.height/2)
-                .attr("text-anchor","middle")
-                .text("No matching Nodes found.");
-            return;
-        }
         //Enter
         var link = this.net.select(".links").selectAll(".link")
             .data(this.links);
@@ -95,30 +93,15 @@ var network = {
         /*Add new Links*/
         link
             .enter().append("line")
-            .attr("class", "link")
-            .style("stroke-width", function (d) {return Math.sqrt(d.value);})
-            .style("stroke-opacity", function (d) {return ""+network.opac(d.value);});
+            .attr("class", "link");
 
         var node = this.net.select(".nodes").selectAll(".node")
             .data(this.nodes);
-        console.log(this.nodes);
         /*Add new Nodes*/
         node
             .enter()
             .append("circle")
             .attr("class", "node")
-            .attr("r", function (d){
-                return d.publications?((network.color(d.publications.length)/255)*5 + 2):
-                    d.pub.authors.length/3+3;})
-            .style("fill", function (d) {
-                if(!d.publications)return "#e6550d";
-                var c = (Math.round(network.color(d.publications.length)));
-                return "rgb("+c+","+30+","+(140-Math.round(c/2))+")";
-            })
-            .classed("award",function(d,i){
-                if(!d.pub)return false;//Author
-                return d.pub.award;
-            })
             /*Add Detail on Demand*/
             .on("mouseenter",function (d) {detail.show(d)})
             .on("mouseout",function (d) {detail.hide(d)})
@@ -187,9 +170,33 @@ var network = {
         this.net.select(".nodes").selectAll(".node")
             .data(this.nodes).exit().remove();
     },
+    setHelpTexts : function () {
+        this.net.selectAll("text").remove();
+        //Show notice if no matching nodes exist
+        if(this.nodes.length == 0){
+            this.net.append("text")
+                .attr("x",network.width/2)
+                .attr("y",network.height/2)
+                .attr("text-anchor","middle")
+                .text("No matching Nodes found.")
+                .attr("class", "notification");
+        }
+        else if(filters.publications.length == 1){
+            if(filters.publications[0].authors.length>this.nodes.length-1){
+                this.net.append("text")
+                    .attr("x",5)
+                    .attr("y",this.height-5)
+                    .text("Some Authors are missing due to your search criteria.")
+                    .style("font-size","12px")
+                    .attr("class", "notification");
+            }
+        }
+    },
     updateNetwork : function (){
         /*Get new Data*/
         this.updateData();
+        /*Add Textual feedback if Nodes are missing*/
+        this.setHelpTexts();
         /*Push the new Nodes to the vis*/
         this.enterNetwork();
         /*Remove nodes that  don't fit the filter criteria*/
@@ -231,12 +238,12 @@ var network = {
             //network.enterNetwork();
             //network.force.tick();
         });
-        if(this.nodes.length == 1) {
-            //Add detail nodes
-            this.createAuthorDetail();
-        }
-        else if(filters.publications.length == 1){
+        //Add detail nodes
+        if(filters.publications.length == 1){
             this.createPubDetail();
+        }
+        else if(this.nodes.length == 1) {
+            this.createAuthorDetail();
         }
     },
     createAuthorDetail : function () {
@@ -259,10 +266,13 @@ var network = {
         var pub = filters.publications[0];
         this.links = [];
         this.nodes.push({name : pub.title.name, pub:pub});
-        $.each(pub.authors,function (i,v){
-            network.links.push({source : network.nodes.length-1,
-                target : network.reverseIndex[v.name], value : 1});
-        });
+        var pubIndex = this.nodes.length-1;
+        for(var i = 0;i<pubIndex;i++) {
+            network.links.push({
+                source: pubIndex,
+                target: i, value: 1
+            });
+        }
     },
     buildIndex : function(){
         network.reverseIndex = {};
