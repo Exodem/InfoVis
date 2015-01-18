@@ -84,7 +84,7 @@ span.award {
 }
 
 .link {
-    stroke: #777;
+    stroke: #444;
 }
 
 #tooltip {
@@ -140,8 +140,6 @@ span.award {
 .x.axis>text {
     visibility: visible;
 }
-
-/*TODO COMMIT*/
 
 .axis path, .axis line {
     fill: none;

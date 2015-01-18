@@ -7,6 +7,8 @@ var filters = {
     yearMax : "",
     authors : [],
     publications : [],
+    reversePubs : {},
+    reverseAuthors : {},
     init: function () {
         var labels = ["Author", "Publication", "Year", "minPub"];
         $.each(labels, function (i, v) {
@@ -20,10 +22,10 @@ var filters = {
                 }
             });
         /*Initialize Lists*/
-        filters.filter();
+        //filters.filter();
         filters.publications = logic.publications;
         filters.authors = logic.authors;
-        /*TODO Add filter-functionality*/
+
         var names = [];
         for (var i = 0; i < this.authors.length; i++){
             names.push(this.authors[i].name);
@@ -92,94 +94,66 @@ var filters = {
         var mp = $("[name=minPub]").val();
         this.minPublications = ($.isNumeric(mp))? mp : 1;
 
-        /*Return text fields to basic state*/
-        /*
-         $.each($("input[type=text]"), function (i, v) {
-         v = $(v);
-         if(v.attr("value") == ""){
-         v.attr("value", v.name);
-         }
-         });
-         */
+        filters.yearMin = $(".yearMin").text();
+        filters.yearMax = $(".yearMax").text();
 
         filters.authorName = $('input[name=Author]').val();
         filters.publicationName = $('input[name=Publication]').val();
 
-        filters.yearMin = $(".yearMin").text();
-        filters.yearMax = $(".yearMax").text();
-
         /*Update stuff*/
         filters.updatePublications();
         filters.updateAuthors();
+        filters.applyAuthorPubFiltering();
         logic.updateAll();
     },
     updateAuthors: function () {
         var authors = [];
+        filters.reverseAuthors = {};
         $.each(logic.authors, function (i, a) {
             /*Apply all filter Criteria*/
             if (a.publications.length >= filters.minPublications && (filters.authorName == "" || a.name.toLowerCase().indexOf(filters.authorName.toLowerCase()) >= 0)) {
-                /* let publication filters also filter authors */
-                /*
-                $.each(filters.publications, function(i, p) {
-                    $.each(p.authors, function(i, pa) {
-                       if(a.name.toLowerCase().indexOf(pa.name.toLowerCase()) >= 0) {
-                           authors.push(a);
-                       }
-                    });
-                });
-                */
-                /* add connected authors */
-                /*
-                $.each(a.publications, function(i, ap) {
-                    $.each(filters.publications, function(i, p) {
-                      if(ap == p.id){
-                          $.each(p.authors, function(i, pa) {
-                             authors.push(pa);
-                          });
-                      }
-                    });
-                });
-                */
-                /* filter authors without publication filters */
-                //authors.push(a);
-
-
-                $.each(a.publications, function (i, ap) {
-                    $.each(filters.publications, function (i, p) {
-                        if (ap == p.id) {
-                            var ex = false;
-                            $.each(authors,function (i,aut){
-                                if(aut==a)ex = true;
-                            });
-                            if(!ex) authors.push(a);
-                        }
-                    });
-                });
-
+                authors.push(a);
+                filters.reverseAuthors[a.name] = a;
             }
         });
         filters.authors = authors;
     },
     updatePublications: function () {
         var pub = [];
+        filters.reversePubs = {};
         $.each(logic.publications, function (i, p) {
             /*Apply all filter Criteria*/
             if ((filters.yearMin <= p.year && p.year <= filters.yearMax) && (filters.publicationName == "" || p.title.name.toLowerCase().indexOf(filters.publicationName.toLowerCase()) >= 0)) {
-                /* let author filters also filter publications */
-                /*TODO Decide if this is a good Idea ;) */
-                $.each(filters.authors, function(i, a) {
-                    $.each(a.publications, function(i, ap) {
-                      if(p.id == ap){
-                          pub.push(p);
-                      }
-                    });
-                });
-
-                /* filter publications without author filters */
-                //pub.push(p);
+                pub.push(p);
+                filters.reversePubs[p.id] = p;
             }
         });
         filters.publications = pub;
-        //console.log(pub);
+    },
+    applyAuthorPubFiltering: function () {
+        var pub = [];
+        var authors = [];
+
+        $.each(filters.publications, function (i,p){
+            $.each(p.authors, function (i,a){
+                if(filters.reverseAuthors[a.name]){
+                    pub.push(p);
+                    authors.push(filters.reverseAuthors[a.name]);
+                }
+            });
+        });
+
+        /*Delete duplicates*/
+        var uPub = pub.reduce(function(a,b){
+            if (a.indexOf(b) < 0 ) a.push(b);
+            return a;
+        },[]);
+        var uAuthors = authors.reduce(function(a,b){
+            if (a.indexOf(b) < 0 ) a.push(b);
+            return a;
+        },[]);
+
+        filters.publications = uPub;
+        filters.authors = uAuthors;
     }
 };

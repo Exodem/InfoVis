@@ -99,7 +99,7 @@ var sunburst = {
             $.each(pub.authors,function (ia,aut) {
                 pubNode.children.push({
                     name : aut.name,
-                    size : detail.reverseIndex[aut.name].publications.length,
+                    size : detail.reverseAuthors[aut.name].publications.length,
                     aut : aut
                 });
             });

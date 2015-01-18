@@ -1,12 +1,16 @@
 /*Provides Detail on Demand functionality*/
 var detail = {
     imageIndex : [],
-    reverseIndex : [],
+    reverseAuthors : {},
+    reversePubs : {},
     init : function () {
         /*Build the image Index*/
         $.each(logic.authors,function (i,v){
-            detail.reverseIndex[v.name] = v;
+            detail.reverseAuthors[v.name] = v;
             detail.testAuthorImages(v);
+        });
+        $.each(logic.publications,function (i,v){
+            detail.reversePubs[v.id] = v;
         });
     },
     show : function (d){
@@ -25,8 +29,8 @@ var detail = {
             d.pub.description.html+"</br>"+"Involved Authors: "+ d.pub.authors.length;
         }
         /*Author*/
-        else if ( d.publications){desc = "Total publications: "+detail.reverseIndex[d.name].publications.length;}
-        else if (d.aut){desc = "Total publications: "+detail.reverseIndex[d.aut.name].publications.length;}
+        else if ( d.publications){desc = "Total publications: "+detail.reverseAuthors[d.name].publications.length;}
+        else if (d.aut){desc = "Total publications: "+detail.reverseAuthors[d.aut.name].publications.length;}
         /*Current Value in the bar chart*/
         else if (d.freq){desc = bars.relation.y+": "+ d.freq;}
         /*Year*/

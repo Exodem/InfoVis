@@ -1,7 +1,7 @@
 var network = {
     width : 350,height : 360,
     nodes : [],links : [],
-    reverseIndex : {},
+    reverseIndex : {},reverseLinks : {},
     ticks : 1,mouseDown : false,
     dragPos : [0,0],
     net : null,force : null ,
@@ -147,7 +147,7 @@ var network = {
 
         //Update existing Nodes
         link
-            .style("stroke-width", function (d) {return Math.sqrt(d.value);})
+            .style("stroke-width", function (d) {return Math.sqrt(d.value/2);})
             .style("stroke-opacity", function (d) {return ""+network.opac(d.value);});
 
         node
@@ -208,29 +208,41 @@ var network = {
             .start();
     },
     updateData : function (){
+        //Deep Copy
         this.nodes = $.extend(true, [], filters.authors);
         /*Build indices for faster access*/
         this.buildIndex();
         this.links = [];
+        this.reverseLinks = {};
         //Build links between authors who published together
         $.each(filters.publications, function (ip,pub){
             $.each(pub.authors,function (i,aut){
                 var src = network.reverseIndex[pub.authors[i].name];
-                if(typeof(src)=='undefined')return true;//continue
+                if(!src)return true;//continue
                 for(var j = i+1;j<pub.authors.length;j++){
-                    var ex = false;
                     var dst = network.reverseIndex[pub.authors[j].name];
-                    if(typeof(dst)=='undefined')continue;
-                    $.each(network.links, function (il,link){
-                        if((link.source == src && link.target == dst)
-                            || (link.source == dst && link.target ==src)){
-                            //Existing link
-                            link.value++;
-                            ex = true;
-                        }
-                    });
+                    if(!dst) continue;
+                    var ex = false;
+                    //Chose the smaller index as src and the other as target
+                    var s = Math.min(src,dst); var d = Math.max(src,dst);
+                    if(network.reverseLinks[s]){
+                        $.each(network.reverseLinks[s],function (il,link){
+                            if(link.target == d){
+                                link.value++;
+                                ex = true;
+                                return false; //break
+                            }
+                        });
+                    }
                     if(!ex){
-                        network.links.push({source : src,target : dst,value : 1});
+                        var link = {source : s,target : d,value : 1};
+                        network.links.push(link);
+                        if(network.reverseLinks[s]){
+                            network.reverseLinks[s].push(link);
+                        }
+                        else {
+                            network.reverseLinks[s]= [link];
+                        }
                     }
                 }
             });

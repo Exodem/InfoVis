@@ -9,8 +9,8 @@ var logic = {
         this.getPubDB(function(){
             /*Initialize all components*/
             logic.createStructure();
-            filters.init();
             detail.init();
+            filters.init();
             network.init();
             sunburst.init();
             bars.init();
