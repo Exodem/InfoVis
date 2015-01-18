@@ -13,6 +13,7 @@ var network = {
     dragPos : [0,0],
     net : null,force : null ,
     color : null,opac : null,
+    behaviour : "fix",
     init: function () {
         /*Initialize SVG*/
         this.net = d3.select(".network").append("svg")
@@ -104,6 +105,7 @@ var network = {
 
         var node = this.net.select(".nodes").selectAll(".node")
             .data(this.nodes);
+
         /*Add new Nodes*/
         node
             .enter()
@@ -135,14 +137,25 @@ var network = {
                 .on("dragend",function(d) {
                     var pos = d3.mouse(this);
                     var dist = Math.sqrt(Math.pow(pos[0]- network.dragPos[0],2)+
-                    Math.pow(pos[1]- network.dragPos[1],2));
+                        Math.pow(pos[1]- network.dragPos[1],2));
                     if(dist > 1){
-                        d3.select(this).classed("fixed", d.fixed = true);
-                        d3.select(this).classed("permanent",d.permanent = true);
+                        d3.select(this).classed("fixed", d.fixed = (network.behaviour=="fix"));
+                        d3.select(this).classed("permanent",d.permanent = (network.behaviour=="fix"));
                     }
                     else { /*Understand it as a click event for unlocking the node*/
                         d3.select(this).classed("fixed", d.fixed = false);
                         d3.select(this).classed("permanent",d.permanent = false);
+                        if(network.behaviour == "select"){
+                            if(d.pub){
+                                $("input[name=Publication]").val(d.pub.title.name);
+                                $("input[name=Author]").val("");
+                            }
+                            else {
+                                $("input[name=Publication]").val("");
+                                $("input[name=Author]").val(d.name);
+                            }
+                            filters.filter();
+                        }
                     }
                     d3.select("#tooltip")
                         .style("display", "block")
@@ -253,9 +266,6 @@ var network = {
                     }
                 }
             });
-            //Provide quick feedback as the computation takes quite a while
-            //network.enterNetwork();
-            //network.force.tick();
         });
         //Add detail nodes
         if(filters.publications.length == 1){
@@ -278,7 +288,6 @@ var network = {
                     return false; //Break loop
                 }
             });
-
         });
     },
     createPubDetail : function () {

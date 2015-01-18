@@ -11,11 +11,19 @@ var controls = {
         var con = $(".controls");
         con.css('height', y*0.8);
         con.append("<label>Network</label><div class='netControls'></div>");
-        con.append("<label>Sunburst</label><div class='sunControls'></div>");
+        //con.append("<label>Sunburst</label><div class='sunControls'></div>");
         con.append("<label>Bar Chart</label><div class='barControls'></div>");
         var net = $(".netControls");
-        var sun = $(".sunControls");
+        //var sun = $(".sunControls");
         var bar = $(".barControls");
+
+        /*Network options*/
+        net.append("<span>Click behaviour: </span></br>" +
+        "<input type='radio' name='beh' value='fix' checked> Unfix Nodes <br>" +
+        "<input type='radio' name='beh' value='select'> Select Nodes ");
+        $("input[name=beh]").on("change",function(){
+            network.behaviour = this.value;
+        });
 
         /*Bar chart Options*/
         bar.append("<span>X-Axis</span></br>" +
@@ -42,9 +50,8 @@ var controls = {
             "<input type='radio' name='sort' value='true' checked> value <br>" +
             "<input type='radio' name='sort' value='false'> name ");
         $("input[name=sort]").on("change",function(){
-            bars.sort = (this.value=="true")?true:false;
+            bars.sort = (this.value=="true");
             bars.buildBars();
         })
-
     }
 };

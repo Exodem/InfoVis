@@ -41,7 +41,6 @@ var sunburst = {
             .innerRadius(function(d) { return Math.max(0, y(d.y)); })
             .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
 
-
         var path = sunburst.sun.selectAll("path")
             .data(partition.nodes(root));
 
@@ -88,8 +87,6 @@ var sunburst = {
                 };
             };
         }
-
-
         d3.select(self.frameElement).style("height", sunburst.height + "px");
     },
     buildTree : function () {

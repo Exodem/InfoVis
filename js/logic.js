@@ -22,7 +22,6 @@ var logic = {
             $(".loading").hide(500);
             $(".content>div").show(500);
         });
-
     },
     getPubDB : function (callback){
         // create a new pubDB json object
@@ -53,12 +52,9 @@ var logic = {
     updateAll : function (){
         //Prevent update before all components are initialized
         if(this.initialized){
-            /*TODO Add more*/
             network.updateNetwork();
             sunburst.buildSunburst();
             bars.buildBars();
         }
-
-
     }
 };

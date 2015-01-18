@@ -147,13 +147,6 @@ var bars = {
                 return a.freq< b.freq;
             });
         }
-        /*else{
-            data.sort(function (a,b){
-                return a.name< b.name;
-            });
-        }*/
-        //Crop data that can not be shown
-        //data.length = Math.min(data.length,bars.width/2);
         return data;
     }
 };
