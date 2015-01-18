@@ -1,7 +1,15 @@
+w = window,
+d = document,
+e = d.documentElement,
+g = d.getElementsByTagName('body')[0],
+x = w.innerWidth || e.clientWidth || g.clientWidth,
+y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
 var controls = {
     init: function () {
         /*Create Containers*/
         var con = $(".controls");
+        con.css('height', y*0.8);
         con.append("<label>Network</label><div class='netControls'></div>");
         con.append("<label>Sunburst</label><div class='sunControls'></div>");
         con.append("<label>Bar Chart</label><div class='barControls'></div>");

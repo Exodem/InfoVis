@@ -1,5 +1,12 @@
+w = window,
+d = document,
+e = d.documentElement,
+g = d.getElementsByTagName('body')[0],
+x = w.innerWidth || e.clientWidth || g.clientWidth,
+y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
 var bars = {
-    width : 250, height : 150,
+    width : (x*0.95-35)*0.33, height : y*0.4-6,
     tree : null,node : null,
     relation : {x:"Author",y:"Publications"},
     bounds : {top : 15,bottom : 15,left : 30,right : 0},

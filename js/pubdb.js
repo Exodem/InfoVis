@@ -211,3 +211,19 @@
     global.pubDB = global.pubDB || {};
     global.pubDB.json = PubDBtoJSONConverter;
 })(jQuery, window);
+
+function updateWindow(){
+var w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+    $('.network svg').attr("width", (x*0.95-35)*0.45).attr("height", y*0.8);
+    $('.sunburst svg').attr("width", (x*0.95-35)*0.33).attr("height", y*0.4-6);
+    $('.bars svg').attr("width", (x*0.95-35)*0.33).attr("height", y*0.4-6);
+    $('.controls').css("height", y*0.8);
+    //TODO: update visualizations
+}
+window.onresize = updateWindow;

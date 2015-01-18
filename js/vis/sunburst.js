@@ -1,5 +1,12 @@
+w = window,
+d = document,
+e = d.documentElement,
+g = d.getElementsByTagName('body')[0],
+x = w.innerWidth || e.clientWidth || g.clientWidth,
+y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
 var sunburst = {
-    width : 250, height : 200,
+    width : (x*0.95-35)*0.33, height : y*0.4-6,
     tree : null,node : null,
     init: function () {
         /*Initialize the sunburst*/
