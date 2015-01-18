@@ -53,9 +53,6 @@ var detail = {
     hide : function (d) {
         var tooltip = d3.select("#tooltip")
             .style("display", "none");
-        /*if(!d3.select(this).classed("permanent")){
-            d3.select(this).classed("fixed", d.fixed = false);
-        }*/
     },
     testAuthorImages : function (author){
         if(author.url=='undefined'||author.url==""){
