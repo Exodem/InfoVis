@@ -220,10 +220,22 @@ var w = window,
     x = w.innerWidth || e.clientWidth || g.clientWidth,
     y = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
+    network.width = (x*0.95-35)*0.45;
+    network.height = y*0.8;
+    sunburst.width = (x*0.95-35)*0.33;
+    sunburst.height =  y*0.4-6;
+    bars.width = (x*0.95-35)*0.33;
+    bars.height =  y*0.4-6;
+
     $('.network svg').attr("width", (x*0.95-35)*0.45).attr("height", y*0.8);
     $('.sunburst svg').attr("width", (x*0.95-35)*0.33).attr("height", y*0.4-6);
     $('.bars svg').attr("width", (x*0.95-35)*0.33).attr("height", y*0.4-6);
     $('.controls').css("height", y*0.8);
-    //TODO: update visualizations
+
+    network.updateNetwork();
+    //TODO: update sunburst size
+    $('.sunburst g').attr("transform", "translate(" + sunburst.width / 2 + "," + (sunburst.height / 2) + ")");
+    //TODO: update bar chart size
+
 }
 window.onresize = updateWindow;
