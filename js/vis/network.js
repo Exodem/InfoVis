@@ -23,7 +23,7 @@ var network = {
         this.force = d3.layout.force()
             .charge(-300)
             .linkDistance(30)
-            .distance(10)
+            .distance(30)
             .theta(0.3)
             .alpha(0.01)
             .gravity(0.3)
@@ -179,6 +179,7 @@ var network = {
                 var c = (Math.round(network.color(d.publications.length)));
                 return "rgb("+c+","+30+","+(140-Math.round(c/2))+")";
             })
+            .classed("permanent fixed", d.permanent = false)
             .classed("award",function(d,i){
                 if(!d.pub)return false;//Author
                 return d.pub.award;

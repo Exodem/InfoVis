@@ -71,9 +71,10 @@ var detail = {
     },
     setAuthorImage : function (author,url) {
         var img = new Image();
-        img.onload = function() {
+        img.onload = function(){
             detail.imageIndex[author.name] = url;
         };
+        img.onerror = function (){/*Ignore ;)*/};
         img.src = url;
     }
 };
