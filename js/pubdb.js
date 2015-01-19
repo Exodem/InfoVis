@@ -220,11 +220,11 @@ var w = window,
     x = e.clientWidth || g.clientWidth,
     y = e.clientHeight|| g.clientHeight;
 
-    network.width = (x*0.95-218)*0.55;
+    network.width = (x*0.95-228)*0.55;
     network.height = y-170;
-    sunburst.width = (x*0.95-218)*0.45;
+    sunburst.width = (x*0.95-228)*0.45;
     sunburst.height =  (y-170)*0.5-6;
-    bars.width = (x*0.95-218)*0.45;
+    bars.width = (x*0.95-228)*0.45;
     bars.height =  (y-170)*0.5-6;
 
     $('.network svg').attr("width", network.width).attr("height", network.height);

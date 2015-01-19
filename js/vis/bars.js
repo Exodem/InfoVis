@@ -6,7 +6,7 @@ x = e.clientWidth || g.clientWidth,
 y = e.clientHeight|| g.clientHeight;
 
 var bars = {
-    width : (x*0.95-218)*0.45, height : (y-170)*0.5-6,
+    width : (x*0.95-228)*0.45, height : (y-170)*0.5-6,
     tree : null,node : null,
     relation : {x:"Author",y:"Publications"},
     bounds : {top : 15,bottom : 15,left : 30,right : 0},

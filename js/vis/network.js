@@ -6,7 +6,7 @@ x = e.clientWidth || g.clientWidth,
 y = e.clientHeight|| g.clientHeight;
 
 var network = {
-    width : (x*0.95-218)*0.55,height : y-170,
+    width : (x*0.95-228)*0.55,height : y-170,
     nodes : [],links : [],
     reverseIndex : {},reverseLinks : {},
     ticks : 1,mouseDown : false,
