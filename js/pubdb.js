@@ -220,17 +220,17 @@ var w = window,
     x = w.innerWidth || e.clientWidth || g.clientWidth,
     y = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
-    network.width = (x*0.95-35)*0.45;
-    network.height = y*0.8;
-    sunburst.width = (x*0.95-35)*0.33;
-    sunburst.height =  y*0.4-6;
-    bars.width = (x*0.95-35)*0.33;
-    bars.height =  y*0.4-6;
+    network.width = (x*0.95-218)*0.55;
+    network.height = y-170;
+    sunburst.width = (x*0.95-218)*0.45;
+    sunburst.height =  (y-170)*0.5-6;
+    bars.width = (x*0.95-218)*0.45;
+    bars.height =  (y-170)*0.5-6;
 
-    $('.network svg').attr("width", (x*0.95-35)*0.45).attr("height", y*0.8);
-    $('.sunburst svg').attr("width", (x*0.95-35)*0.33).attr("height", y*0.4-6);
-    $('.bars svg').attr("width", (x*0.95-35)*0.33).attr("height", y*0.4-6);
-    $('.controls').css("height", y*0.8);
+    $('.network svg').attr("width", network.width).attr("height", network.height);
+    $('.sunburst svg').attr("width", sunburst.width).attr("height", sunburst.height);
+    $('.bars svg').attr("width", bars.width).attr("height", bars.height);
+    $('.controls').css("height", y-170);
 
     network.updateNetwork();
     //TODO: update sunburst size

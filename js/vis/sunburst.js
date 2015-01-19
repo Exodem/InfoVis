@@ -6,7 +6,7 @@ x = w.innerWidth || e.clientWidth || g.clientWidth,
 y = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
 var sunburst = {
-    width : (x*0.95-35)*0.33, height : y*0.4-6,
+    width : (x*0.95-218)*0.45, height : (y-170)*0.5-6,
     tree : null,node : null,
     init: function () {
         /*Initialize the sunburst*/
