@@ -144,7 +144,12 @@ var bars = {
         }
         if(this.sort){
             data.sort(function (a,b){
-                return a.freq< b.freq;
+                return b.freq - a.freq;
+            });
+        }
+        else {
+            data.sort(function (a,b){
+                return (a.name< b.name)?-1:(a.name== b.name)?0:1;
             });
         }
         return data;

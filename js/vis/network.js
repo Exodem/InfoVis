@@ -172,7 +172,7 @@ var network = {
 
         node
             .attr("r", function (d){
-                return d.publications?((network.color(d.publications.length)/255)*5 + 2):
+                return d.publications?((network.color(d.publications.length)/255)*7 + 2):
                 d.pub.authors.length/2+2;})
             .style("fill", function (d) {
                 if(!d.publications)return "#e6550d";
