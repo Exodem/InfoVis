@@ -1,7 +1,7 @@
 (function ($, global) {
     var PubDBtoJSONConverter = function () {
-        //this.pubDBpath = "http://localhost:3000"; // <-- node server url here (converter.js)
-        this.pubDBpath = "./Server/proxy.php";
+        this.pubDBpath = "http://localhost:3000"; // <-- node server url here (converter.js)
+        //this.pubDBpath = "./Server/proxy.php";
         /*http://pubdb-infovisproject.rhcloud.com/*/
         this.$pubDB = null;
         // this.callback = callback;
@@ -221,11 +221,11 @@ var w = window,
     x = e.clientWidth || g.clientWidth,
     y = e.clientHeight|| g.clientHeight;
 
-    network.width = (x*0.95-228)*0.55;
+    network.width = (x*0.95-280)*0.55;
     network.height = y-170;
-    sunburst.width = (x*0.95-228)*0.45;
+    sunburst.width = (x*0.95-280)*0.45;
     sunburst.height =  (y-170)*0.5-6;
-    bars.width = (x*0.95-228)*0.45;
+    bars.width = (x*0.95-280)*0.45;
     bars.height =  (y-170)*0.5-6;
 
     $('.network svg').attr("width", network.width).attr("height", network.height);

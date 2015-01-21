@@ -6,20 +6,20 @@ x = e.clientWidth || g.clientWidth,
 y = e.clientHeight|| g.clientHeight;
 
 var sunburst = {
-        width : (x*0.95-228)*0.45, height : (y-170)*0.5-6,
-            tree : null,node : null,
-            init: function () {
-            /*Initialize the sunburst*/
-            sunburst.sun = d3.select(".sunburst").append("svg")
-                .attr("width", sunburst.width)
-                .attr("height", sunburst.height)
-                .append("g")
-                .attr("transform", "translate(" + sunburst.width / 2 + "," + (sunburst.height / 2) + ")");
-            this.buildSunburst();
-        },
-        buildSunburst : function () {
-            /*Build the underlying Tree for the sunburst layout*/
-            var root = this.buildTree();
+    width : (x*0.95-280)*0.45, height : (y-170)*0.5-6,
+    tree : null,node : null,
+    init: function () {
+        /*Initialize the sunburst*/
+        sunburst.sun = d3.select(".sunburst").append("svg")
+            .attr("width", sunburst.width)
+            .attr("height", sunburst.height)
+            .append("g")
+            .attr("transform", "translate(" + sunburst.width / 2 + "," + (sunburst.height / 2) + ")");
+        this.buildSunburst();
+    },
+    buildSunburst : function () {
+        /*Build the underlying Tree for the sunburst layout*/
+        var root = this.buildTree();
 
         var radius = Math.min(sunburst.width, sunburst.height) / 2.1;
         var x = d3.scale.pow()
