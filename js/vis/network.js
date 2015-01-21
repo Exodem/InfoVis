@@ -18,7 +18,8 @@ var network = {
         /*Initialize SVG*/
         this.net = d3.select(".network").append("svg")
             .attr("width", this.width)
-            .attr("height", this.height);
+            .attr("height", this.height)
+            ;
         /*Create force directed Layout*/
         this.force = d3.layout.force()
             .charge(-300)
@@ -29,13 +30,14 @@ var network = {
             .gravity(0.3)
             .friction(0.5)
             .size([this.width, this.height]);
-        /*Add Zooming and Panning Behaviour*/
+        /*Add ZoomingBehaviour*/
         this.net
             .call(d3.behavior.zoom()
                 .center([network.width / 2, network.height / 2])
                 .scaleExtent([0, 8])
                 .on("zoom", function () {
-                    network.net.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+                    network.net.attr("transform",
+                        "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
             }))
             /*Prevent Zoom on doublecklick and panning behaviour*/
             .on("dblclick.zoom", null)
@@ -44,8 +46,8 @@ var network = {
             .on("touchmove.zoom", null)
             .on("touchend.zoom", null)
             .on("mousedown",function(){network.mouseDown = true;})
-            .on("mouseup",function(){network.mouseDown = true;})
-            .append("g");
+            .on("mouseup",function(){network.mouseDown = true;});
+
         /*Initialize and start the network*/
         this.createNetwork();
     },
@@ -112,7 +114,7 @@ var network = {
             .append("circle")
             .attr("class", "node")
             /*Add Detail on Demand*/
-            .on("mouseenter",function (d) {detail.show(d)})
+            .on("mouseover",function (d) {detail.show(d)})
             .on("mouseout",function (d) {detail.hide(d)})
 
             /*Add Drag behaviour*/
