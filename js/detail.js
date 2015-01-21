@@ -74,7 +74,7 @@ var detail = {
         img.onload = function(){
             detail.imageIndex[author.name] = url;
         };
-        img.onerror = function (){/*Ignore ;)*/};
+        img.onerror = function (e){e.stopPropagation();};
         img.src = url;
     }
 };

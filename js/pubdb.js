@@ -1,6 +1,7 @@
 (function ($, global) {
     var PubDBtoJSONConverter = function () {
-        this.pubDBpath = "http://localhost:3000"; // <-- node server url here (converter.js)
+        //this.pubDBpath = "http://localhost:3000"; // <-- node server url here (converter.js)
+        this.pubDBpath = "./Server/proxy.php";
         /*http://pubdb-infovisproject.rhcloud.com/*/
         this.$pubDB = null;
         // this.callback = callback;
@@ -15,7 +16,7 @@
         // get html data from node server and create json
         $.get(this.pubDBpath, function (data) {
             _this.$pubDB = $(data); // create jquery object from html code
-
+            console.log(data);
             callback(_this.$pubDB);
         })
     };
